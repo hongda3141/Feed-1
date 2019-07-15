@@ -1,0 +1,14 @@
+syntax = "proto3";
+
+package protos;
+
+message GetRealUlrRequest {
+    string url = 1;
+}
+message GetRealUlrResponse {
+    string url = 1;
+}
+service BridgeService {
+    rpc GetRealUrl (GetRealUlrRequest) returns (GetRealUlrResponse) {
+    }
+}

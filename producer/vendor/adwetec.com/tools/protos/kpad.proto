@@ -1,0 +1,94 @@
+package protos;
+
+message KpadRequest {
+    required string sid = 1; // 此请求的唯一ID
+    message Impression { // 广告信息
+                         required int32 id = 1; // 此IMPRESSION在当前REQUEST中的唯一ID(从0开始)
+                         optional int32 width = 2; // 广告位的宽和高
+                         optional int32 height = 3;
+                         message Deal {
+                             required string deal_id = 1; // 媒体分配的DEALID
+                             required int32 min_price = 2; // 此DEAL对应的价格--单位(分)
+                         }
+                         repeated Deal deal = 4;
+                         optional string campaign_date = 5; // 预投放日期仅开屏使用--格式:"20160602"
+    }
+    repeated Impression imp = 2;
+    message Device { // 设备信息
+                     optional string ip = 1; // IPV4点分十进制必须为终端真实IP地址
+                     optional string user_agent = 2; //
+                     optional string idfa = 3; // IOS6.0及以上的IDFA号
+                     optional string idfa_md5 = 4; // IOS6.0及以上的IDFA号MD5值
+                     optional string imei = 5; // 安卓设备的IMEI号
+                     optional string imei_md5 = 6; // 安卓设备的IMEI号的MD5值若填写IMEI原值则不用填此字段
+                     optional string mac = 7; // 设备的MAC地址
+                     optional string mac_md5 = 8; // 设备的MAC地址的MD5值.若填写MAC原值则不用填此字段
+                     optional string android_id = 9; // ANDROIDID
+                     optional int32 device_type = 10; // 设备类型 0-手机 1-平板 2-PC 3-互联网电视
+                     optional string brand = 11; // 设备品牌 	例如: nokia, samsung
+                     optional string model = 12; // 设备型号 	例如: n70, galaxy
+                     optional string os = 13; // 操作系统 	例如: android, ios
+                     optional string osv = 14; // 操作系统版本 例如：7.0.2
+                     optional int32 network = 15 [default = 1]; // 设备所处网络环境 0-未识别 1-WIFI 2-2G 3-3G 4-4G
+                     optional int32 operator = 16; // 设备的网络运营商 0-未知 1-移动 2-联通 3-电信
+                     optional int32 width = 17; // 设备屏幕尺寸:宽
+                     optional int32 height = 18; // 设备屏幕尺寸:高
+                     optional int32 pixel_ratio = 19 [default = 1000]; // 设备密度(对应于PIXEL_RATIO)
+                     optional int32 orientation = 20; // 屏幕方向 0-未知 1-竖屏 2-横屏
+                     optional int32 timezone_offset = 21 [default = 480]; // 用户所处时区的分钟偏移量 例如如果是东八区则: timezone_offset = 60 * 8 = 480
+                     message Geo {
+                         optional double lat = 1; // 纬度取值范围[-90.0 , +90.0]
+                         optional double lon = 2; // 经度取值范围[-180.0 , +180.0]
+                     }
+                     optional Geo geo = 22;
+                     repeated string installed_app = 23; // 用户已安装APP列表
+    }
+    optional Device device = 3;
+    message App {
+        optional string package_name = 1; // 应用包名例如: com.moji.MojiWeather
+        optional string app_name = 2; // 应用名例如:陌陌
+        repeated string category = 3; // APP类目
+    }
+    optional App app = 4;
+}
+message KpadResponse {
+    optional string id = 1; // 对应REQUEST中的ID
+    optional int32 status = 2 [default = 0]; // 0-OK其他值表示无广告返回
+    message Seat { // 一个位置上的广告
+                   required int32 id = 1; // 指定请求里的IMPRESSIONID
+                   message Ad { // 广告字段
+                                required int32 id = 1; // 广告序号为0
+                                optional string adcontent = 2; // 广告代码片段 html/imgpath/displayurl
+                                optional int32 creative_type = 3; // 创意类型  1 文字 2 图片 3 FLASH 4 视频
+                                repeated int32 category = 4; // 广告类目
+                                repeated string impression_tracking_url = 5; // 展现反馈地址
+                                optional string click_through_url = 6; // 点击跳转地址
+                                repeated string click_tracking_url = 7; // 点击跟踪地址
+                                message NativeAd {
+                                    message Attr { // 属性(描述)信息
+                                                   required string name = 1; // 属性名
+                                                   required string value = 2; // 属性值
+                                    }
+                                    repeated Attr attr = 1;
+                                    optional int32 template_id = 2; // NATIVE模板ID
+                                }
+                                optional NativeAd native_ad = 8;
+                                optional string deal_id = 9; // 指定媒体DEALID
+                                optional string campaign_date = 10; // 计划投放日期仅开屏使用如:"20160602"
+                                optional string creative_id = 11; // 广告创意的唯一标识
+                                optional string ad_source = 12; // 广告来源
+                                optional string deeplink_url = 13; // APP唤醒地址
+                                optional string download_url = 14; // APP下载地址
+                                optional int32 price = 15; // 广告报价,单位(分)
+                                optional int32 settle_price = 16; // 广告结算价,单位(分)
+                                optional int32 bid_price = 17; // ADX计入场景--返回报价供上游ADX竞价单位(分)
+                                message EventTrack { // 事件监测URL
+                                                     optional uint32 type = 1;
+                                                     repeated string url = 2;
+                                }
+                                repeated EventTrack event_track = 18;
+                   }
+                   repeated Ad ad = 2;
+    }
+    repeated Seat seat = 3;
+}

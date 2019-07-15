@@ -1,0 +1,18 @@
+syntax = "proto3";
+
+package protos;
+
+message GetUlrRequest {
+    string url = 1;
+}
+message GetUlrResponse {
+    string md5 = 1;
+    int32 width = 2;
+    int32 height = 3;
+    string mine = 4;
+    uint64 phash = 5;
+}
+service MaterialService {
+    rpc GetRealUrl (GetUlrRequest) returns (GetUlrResponse) {
+    }
+}

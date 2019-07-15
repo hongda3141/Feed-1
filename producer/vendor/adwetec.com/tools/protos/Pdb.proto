@@ -1,0 +1,504 @@
+package protos;
+
+message PdbBidEvent {
+    required int64 time = 1; // 请求到达时间(精确到毫秒)
+    optional BdfeedRequest request = 2; // 请求对象
+    optional int64 creativeid = 3; // 筛选得到的创意ID
+    optional int64 advgroupid = 4; // 创意所属的单元ID
+    optional int64 campaignid = 5; // 创意所属的计划ID
+    optional string dealid = 6; // 创意所属的DEALID
+    optional string userid = 7; // 用户标识
+    repeated int64 targets = 8; // 所有符合条件的创意ID
+    optional int64 timespan = 9; // BID处理时间
+    optional string timestr = 10; // 请求达到时间--字符串形式(暂时没用)
+    optional string ua = 11; // ???百度端UA
+    optional string ip = 12; // ???百度端IP
+
+    optional BdfeedRequest bdfeed = 15; //
+    optional BdkpadRequest bdkpad = 13; //
+    optional ZybangRequest zybang = 14; //
+}
+message PdbUserEvent {
+    required int32 kind = 1; //
+    required string impid = 2; // 对应BID中的曝光ID
+    optional string ua = 3; // 用户UA
+    optional string ip = 4; // 用户IP
+    optional string os = 5;
+    optional string userid = 6; // 用户标识
+    optional int64 time = 7; // 事件产生时间
+    optional int64 campaignid = 8;
+    optional int64 advgroupid = 9;
+    optional int64 creativeid = 10;
+    optional string dealid = 11;
+    optional int64 timespan = 12;
+    optional string referer = 13; // 
+    optional string timestr = 14; //
+    optional string bidid = 15; // 对应BID的ID
+    optional string device = 16;
+    optional int32 connection = 17;
+}
+// ********************************************************
+message BdfeedRequest {
+    required string id = 1;
+    message Imp {
+        required string id = 1;
+        message Banner {
+            optional int32 w = 1;
+            optional int32 h = 2;
+            enum AdPosition {
+                UNKNOWN = 0;
+                ABOVE_THE_FOLD = 1;
+                DEPRECATED_LIKELY_BELOW_THE_FOLD = 2;
+                BELOW_THE_FOLD = 3;
+                HEADER = 4;
+                FOOTER = 5;
+                SIDEBAR = 6;
+                AD_POSITION_FULLSCREEN = 7;
+            }
+            optional AdPosition pos = 4;
+        }
+        optional Banner banner = 2;
+        // optional Video video = 3; // Video
+        // optional Audio audio = 15; // Audio
+        optional string tagid = 7; // 广告位ID
+        optional double bidfloor = 8; // 竞价最低价格
+        optional bool secure = 12; // 标识是HTTP还是HTTPS: 0 = non-secure 1 = secure
+        message Native {
+            message NativeRequest {
+                enum LayoutId {
+                    CONTENT_WALL = 1;
+                    APP_WALL = 2;
+                    NEWS_FEED = 3;
+                    CHAT_LIST = 4;
+                    CAROUSEL = 5;
+                    CONTENT_STREAM = 6;
+                    GRID = 7;
+                }
+                optional LayoutId layout = 2;
+                enum ContextType {
+                    CONTENT = 1;
+                    SOCIAL = 2;
+                    PRODUCT = 3;
+                }
+                optional ContextType context = 7;
+                enum ContextSubtype {
+                    CONTENT_GENERAL_OR_MIXED = 10;
+                    CONTENT_ARTICLE = 11;
+                    CONTENT_VIDEO = 12;
+                    CONTENT_AUDIO = 13;
+                    CONTENT_IMAGE = 14;
+                    CONTENT_USER_GENERATED = 15;
+                    SOCIAL_GENERAL = 20;
+                    SOCIAL_EMAIL = 21;
+                    SOCIAL_CHAT_IM = 22;
+                    PRODUCT_SELLING = 30;
+                    PRODUCT_MARKETPLACE = 31;
+                    PRODUCT_REVIEW = 32;
+                }
+                optional ContextSubtype contextsubtype = 8;
+                enum PlacementType {
+                    IN_FEED = 1;
+                    ATOMIC_UNIT = 2;
+                    OUTSIDE = 3;
+                    RECOMMENDATION = 4;
+                }
+                optional PlacementType plcmttype = 9;
+                optional int32 plcmtcnt = 4;
+            }
+            optional NativeRequest request_native = 50;
+        }
+        optional Native native = 13;
+        repeated string templelist = 100; // 流量支持的模板ID列表
+        repeated string dealidlist = 101; // 订单ID列表
+    }
+    repeated Imp imp = 2; // 曝光对象
+    message Site {
+        optional string name = 2;
+        optional string domain = 3;
+        optional string page = 7;
+        optional string ref = 9;
+    }
+    optional Site site = 3; // 页面信息
+    message App {
+        optional string id = 1;
+        optional string name = 2;
+        optional string ver = 7;
+        optional string bundle = 8;
+    }
+    optional App app = 4; // 应用参数
+    message Geo {
+        optional double lat = 1;
+        optional double lon = 2;
+        enum LocationType {
+            GPS_LOCATION = 1;
+            IP = 2;
+            USER_PROVIDED = 3;
+        }
+        optional LocationType type = 9;
+    }
+    message Device {
+        optional string ua = 2;
+        optional string ip = 3;
+        optional Geo geo = 4;
+        optional string ipv6 = 9;
+        optional string model = 13;
+        optional string os = 14; // 系统类型
+        optional string osv = 15; // 系统版本
+        optional int32 w = 25; // 屏幕宽度
+        optional int32 h = 26; // 屏幕高度
+        enum ConnectionType {
+            CONNECTION_UNKNOWN = 0;
+            ETHERNET = 1;
+            WIFI = 2;
+            CELL_UNKNOWN = 3;
+            CELL_2G = 4;
+            CELL_3G = 5;
+            CELL_4G = 6;
+        }
+        optional ConnectionType connectiontype = 17; // 网络类型
+        enum DeviceType {
+            APP = 1;
+            PC = 2;
+            WAP = 3;
+        }
+        optional DeviceType devicetype = 18; // 设备类型
+        optional string ifa = 20;
+        optional string macsha1 = 21;
+        optional string macmd5 = 22;
+        optional string cuid = 100;
+    }
+    optional Device device = 5; // 设备参数
+    message User {
+        optional string id = 1;
+        optional string buyeruid = 2;
+        optional int32 yob = 3;
+        optional string gender = 4;
+        optional string keywords = 5;
+        optional Geo geo = 7;
+        optional string baiduid = 100;
+    }
+    optional User user = 6; // 用户信息
+    enum AuctionType {
+        FIRST_PRICE = 1;
+        SECOND_PRICE = 2;
+        FIXED_PRICE = 3;
+    }
+    optional AuctionType at = 7; // 竞价类型, where 1 = First Price, 2 = Second Price Plus[default = SECOND_PRICE].
+    optional int32 tmax = 8; // 超时时间100ms
+    repeated int32 experiment_id_list = 100; // 实验列表
+    optional string user_dislike_ad = 101; // dislike信息
+    message GeneralTransInfo {
+        required string key = 1; // key
+        optional string value = 2; // value
+        message Pair {
+            optional string key = 1;
+            optional string value = 2;
+        }
+        repeated Pair value_list = 3; // key可能对应的数组形式的value
+    }
+    repeated GeneralTransInfo trans_info_list = 102; // 透传字段
+}
+message BdfeedResponse {
+    required string id = 1;
+    message SeatBid {
+        message Bid {
+            required string id = 1;
+            required string impid = 2;
+            required double price = 3;
+            optional string adid = 4;
+            optional string nurl = 5;
+            optional string adm = 6;
+            repeated string impurl = 100;
+            optional string ext = 101;
+            optional string templeid = 102;
+            repeated string expurl = 103;
+            optional string dealid = 104;
+            optional string bt_type = 10001;
+            optional string bt_info = 10002;
+        }
+        repeated Bid bid = 1;
+    }
+    repeated SeatBid seatbid = 2;
+    optional string bidid = 3;
+}
+
+// ********************************************************
+message ZybangRequest {
+    required string id = 1;
+    message Imp {
+        required string id = 1;
+        message Banner {
+            optional int32 w = 1;
+            optional int32 h = 2;
+            enum AdPosition {
+                UNKNOWN = 0;
+                ABOVE_THE_FOLD = 1;
+                DEPRECATED_LIKELY_BELOW_THE_FOLD = 2;
+                BELOW_THE_FOLD = 3;
+                HEADER = 4;
+                FOOTER = 5;
+                SIDEBAR = 6;
+                AD_POSITION_FULLSCREEN = 7;
+            }
+            optional AdPosition pos = 4;
+        }
+        optional Banner banner = 2;
+        // optional Video video = 3; // Video
+        // optional Audio audio = 15; // Audio
+        optional string tagid = 7; // 广告位ID
+        optional double bidfloor = 8; // 竞价最低价格
+        optional bool secure = 12; // 标识是HTTP还是HTTPS: 0 = non-secure 1 = secure
+        message Native {
+            message NativeRequest {
+                enum LayoutId {
+                    CONTENT_WALL = 1;
+                    APP_WALL = 2;
+                    NEWS_FEED = 3;
+                    CHAT_LIST = 4;
+                    CAROUSEL = 5;
+                    CONTENT_STREAM = 6;
+                    GRID = 7;
+                }
+                optional LayoutId layout = 2;
+                enum ContextType {
+                    CONTENT = 1;
+                    SOCIAL = 2;
+                    PRODUCT = 3;
+                }
+                optional ContextType context = 7;
+                enum ContextSubtype {
+                    CONTENT_GENERAL_OR_MIXED = 10;
+                    CONTENT_ARTICLE = 11;
+                    CONTENT_VIDEO = 12;
+                    CONTENT_AUDIO = 13;
+                    CONTENT_IMAGE = 14;
+                    CONTENT_USER_GENERATED = 15;
+                    SOCIAL_GENERAL = 20;
+                    SOCIAL_EMAIL = 21;
+                    SOCIAL_CHAT_IM = 22;
+                    PRODUCT_SELLING = 30;
+                    PRODUCT_MARKETPLACE = 31;
+                    PRODUCT_REVIEW = 32;
+                }
+                optional ContextSubtype contextsubtype = 8;
+                enum PlacementType {
+                    IN_FEED = 1;
+                    ATOMIC_UNIT = 2;
+                    OUTSIDE = 3;
+                    RECOMMENDATION = 4;
+                }
+                optional PlacementType plcmttype = 9;
+                optional int32 plcmtcnt = 4;
+            }
+            optional NativeRequest request_native = 50;
+        }
+        optional Native native = 13;
+        repeated string templelist = 100; // 流量支持的模板ID列表
+        repeated string dealidlist = 101; // 订单ID列表
+    }
+    repeated Imp imp = 2; // 曝光对象
+    message Site {
+        optional string name = 2;
+        optional string domain = 3;
+        optional string page = 7;
+        optional string ref = 9;
+    }
+    optional Site site = 3; // 页面信息
+    message App {
+        optional string id = 1;
+        optional string name = 2;
+        optional string ver = 7;
+        optional string bundle = 8;
+    }
+    optional App app = 4; // 应用参数
+    message Geo {
+        optional double lat = 1;
+        optional double lon = 2;
+        enum LocationType {
+            GPS_LOCATION = 1;
+            IP = 2;
+            USER_PROVIDED = 3;
+        }
+        optional LocationType type = 9;
+    }
+    message Device {
+        optional string ua = 2;
+        optional string ip = 3;
+        optional Geo geo = 4;
+        optional string ipv6 = 9;
+        optional string model = 13;
+        optional string os = 14; // 系统类型
+        optional string osv = 15; // 系统版本
+        optional int32 w = 25; // 屏幕宽度
+        optional int32 h = 26; // 屏幕高度
+        enum ConnectionType {
+            CONNECTION_UNKNOWN = 0;
+            ETHERNET = 1;
+            WIFI = 2;
+            CELL_UNKNOWN = 3;
+            CELL_2G = 4;
+            CELL_3G = 5;
+            CELL_4G = 6;
+        }
+        optional ConnectionType connectiontype = 17; // 网络类型
+        enum DeviceType {
+            APP = 1;
+            PC = 2;
+            WAP = 3;
+        }
+        optional DeviceType devicetype = 18; // 设备类型
+        optional string ifa = 20;
+        optional string macsha1 = 21;
+        optional string macmd5 = 22;
+        optional string cuid = 100;
+    }
+    optional Device device = 5; // 设备参数
+    message User {
+        optional string id = 1;
+        optional string buyeruid = 2;
+        optional int32 yob = 3;
+        optional string gender = 4;
+        optional string keywords = 5;
+        optional Geo geo = 7;
+        optional string baiduid = 100;
+    }
+    optional User user = 6; // 用户信息
+    enum AuctionType {
+        FIRST_PRICE = 1;
+        SECOND_PRICE = 2;
+        FIXED_PRICE = 3;
+    }
+    optional AuctionType at = 7; // 竞价类型, where 1 = First Price, 2 = Second Price Plus[default = SECOND_PRICE].
+    optional int32 tmax = 8; // 超时时间100ms
+    repeated int32 experiment_id_list = 100; // 实验列表
+    optional string user_dislike_ad = 101; // dislike信息
+    message GeneralTransInfo {
+        required string key = 1; // key
+        optional string value = 2; // value
+        message Pair {
+            optional string key = 1;
+            optional string value = 2;
+        }
+        repeated Pair value_list = 3; // key可能对应的数组形式的value
+    }
+    repeated GeneralTransInfo trans_info_list = 102; // 透传字段
+}
+message ZybangResponse {
+    required string id = 1;
+    message SeatBid {
+        message Bid {
+            required string id = 1;
+            required string impid = 2;
+            required double price = 3;
+            optional string adid = 4;
+            optional string nurl = 5;
+            optional string adm = 6;
+            repeated string impurl = 100;
+            optional string ext = 101;
+            optional string templeid = 102;
+            repeated string expurl = 103;
+            optional string dealid = 104;
+            optional string bt_type = 10001;
+            optional string bt_info = 10002;
+        }
+        repeated Bid bid = 1;
+    }
+    repeated SeatBid seatbid = 2;
+    optional string bidid = 3;
+}
+
+// ********************************************************
+// 百度开屏
+message BdkpadRequest {
+    required string sid = 1; // 此请求的唯一ID
+    message Impression {
+        required int32 id = 1; // 此IMPRESSION在当前REQUEST中的唯一ID(从0开始)
+        optional int32 width = 2; // 广告位的宽和高
+        optional int32 height = 3;
+        message Deal {
+            required string deal_id = 1; // 媒体分配的DEALID
+            required int32 min_price = 2; // 此DEAL对应的价格--单位(分)
+        }
+        repeated Deal deal = 4;
+        optional string campaign_date = 5; // 预投放日期仅开屏使用--格式:"20160602"
+    }
+    repeated Impression imp = 2;
+    message Device {
+        optional string ip = 1; // IPV4点分十进制必须为终端真实IP地址
+        optional string user_agent = 2; //
+        optional string idfa = 3; // IOS6.0及以上的IDFA号
+        optional string idfa_md5 = 4; // IOS6.0及以上的IDFA号MD5值
+        optional string imei = 5; // 安卓设备的IMEI号
+        optional string imei_md5 = 6; // 安卓设备的IMEI号的MD5值若填写IMEI原值则不用填此字段
+        optional string mac = 7; // 设备的MAC地址
+        optional string mac_md5 = 8; // 设备的MAC地址的MD5值.若填写MAC原值则不用填此字段
+        optional string android_id = 9; // ANDROIDID
+        optional int32 device_type = 10; // 设备类型 0-手机 1-平板 2-PC 3-互联网电视
+        optional string brand = 11; // 设备品牌 	例如: nokia, samsung
+        optional string model = 12; // 设备型号 	例如: n70, galaxy
+        optional string os = 13; // 操作系统 	例如: android, ios
+        optional string osv = 14; // 操作系统版本 例如：7.0.2
+        optional int32 network = 15 [default = 1]; // 设备所处网络环境 0-未识别 1-WIFI 2-2G 3-3G 4-4G
+        optional int32 operator = 16; // 设备的网络运营商 0-未知 1-移动 2-联通 3-电信
+        optional int32 width = 17; // 设备屏幕尺寸:宽
+        optional int32 height = 18; // 设备屏幕尺寸:高
+        optional int32 pixel_ratio = 19 [default = 1000]; // 设备密度(对应于PIXEL_RATIO)
+        optional int32 orientation = 20; // 屏幕方向 0-未知 1-竖屏 2-横屏
+        optional int32 timezone_offset = 21 [default = 480]; // 用户所处时区的分钟偏移量 例如如果是东八区则: timezone_offset = 60 * 8 = 480
+        message Geo {
+            optional double lat = 1; // 纬度取值范围[-90.0 , +90.0]
+            optional double lon = 2; // 经度取值范围[-180.0 , +180.0]
+        }
+        optional Geo geo = 22;
+        repeated string installed_app = 23; // 用户已安装APP列表
+    }
+    optional Device device = 3;
+    message App {
+        optional string package_name = 1; // 应用包名例如: com.moji.MojiWeather
+        optional string app_name = 2; // 应用名例如:陌陌
+        repeated string category = 3; // APP类目
+    }
+    optional App app = 4;
+}
+message BdkpadResponse {
+    optional string id = 1; // 对应REQUEST中的ID
+    optional int32 status = 2 [default = 0]; // 0-OK其他值表示无广告返回
+    message Seat {
+        required int32 id = 1; // 指定请求里的IMPRESSIONID
+        message Ad {
+            required int32 id = 1; // 广告序号为0
+            optional string adcontent = 2; // 广告代码片段 html/imgpath/displayurl
+            optional int32 creative_type = 3; // 创意类型  1 文字 2 图片 3 FLASH 4 视频
+            repeated int32 category = 4; // 广告类目
+            repeated string impression_tracking_url = 5; // 展现反馈地址
+            optional string click_through_url = 6; // 点击跳转地址
+            repeated string click_tracking_url = 7; // 点击跟踪地址
+            message NativeAd {
+                message Attr {
+                    required string name = 1; // 属性名
+                    required string value = 2; // 属性值
+                }
+                repeated Attr attr = 1;
+                optional int32 template_id = 2; // NATIVE模板ID
+            }
+            optional NativeAd native_ad = 8;
+            optional string deal_id = 9; // 指定媒体DEALID
+            optional string campaign_date = 10; // 计划投放日期仅开屏使用如:"20160602"
+            optional string creative_id = 11; // 广告创意的唯一标识
+            optional string ad_source = 12; // 广告来源
+            optional string deeplink_url = 13; // APP唤醒地址
+            optional string download_url = 14; // APP下载地址
+            optional int32 price = 15; // 广告报价,单位(分)
+            optional int32 settle_price = 16; // 广告结算价,单位(分)
+            optional int32 bid_price = 17; // ADX计入场景--返回报价供上游ADX竞价单位(分)
+            message EventTrack {
+                optional uint32 type = 1;
+                repeated string url = 2;
+            }
+            repeated EventTrack event_track = 18;
+        }
+        repeated Ad ad = 2;
+    }
+    repeated Seat seat = 3;
+}
+// ********************************************************

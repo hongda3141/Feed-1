@@ -1,0 +1,116 @@
+syntax = "proto3";
+
+package protos;
+
+message ListRequest{
+     int32  status     = 1;
+     int32  type       = 2;
+     int32  typeStatus = 3;
+     string desc       = 4;
+     string username   = 5;
+     string time       = 6;
+     sint64 userId     = 7;
+     bool   isProd     = 8;
+
+}
+
+message ListResponseItem{
+     string  id           = 1;
+     string  batchType    = 2;
+     string  username     = 3;
+     string  description  = 4;
+     string  startTime    = 5;
+     string  endTime      = 6;
+     string  costTime     = 7;
+     int32   status       = 8;
+     sint64  num          = 9;
+     sint64  createTime   = 10;
+}
+
+message ListResponse{
+    repeated ListResponseItem lists = 1;
+}
+
+message AddRequest{
+      string  Id           = 1;
+      string  BatchType    = 2;
+      string  FilePath     = 3;
+      sint64  UserId       = 4;
+      bool    IsProd       = 5;
+      string  Description  = 6;
+      string  Param        = 7;
+      string  SjFileInfo   = 8;
+}
+
+message AddResponse{
+     int32  Result =1;
+     string Reason =2;
+}
+
+message GetRequest{
+     string Id = 1;
+}
+
+message GetResponseItem{
+     string Id             = 1;
+     string BatchType      = 2;
+     sint64 UserId         = 3;
+     string Description    = 4;
+     sint64 StartTime      = 5;
+     int32  Status         = 6;
+}
+
+message GetResponse{
+    repeated GetResponseItem lists = 1;
+}
+
+message StickRequest{
+     string Id = 1;
+}
+
+message StickResponse{
+     string Id           = 1;
+	 string BatchType    = 2;
+	 sint64 UserId       = 3;
+	 string Description  = 4;
+	 sint64 StartTime    = 5;
+	 int32  Status       = 6;
+}
+
+message CancelRequest{
+     string Id = 1;
+}
+
+message CancelResponse{
+     string Id           = 1;
+     string BatchType    = 2;
+	 sint64 UserId       = 3;
+	 string Description  = 4;
+	 sint64 StartTime    = 5;
+	 int32  Status       = 6;
+}
+
+
+message DeleteRequest{
+     string Id = 1;
+}
+
+message DeleteResponse{
+     string Id           = 1;
+     string BatchType    = 2;
+     sint64 UserId       = 3;
+     string Description  = 4;
+     sint64 StartTime    = 5;
+     int32  Status       = 6;
+}
+
+
+service BatchService{
+    rpc ListBatch   (ListRequest)   returns (ListResponse)   {}
+    rpc AddBatch    (AddRequest)    returns (AddResponse)    {}
+    rpc GetBatch    (GetRequest)    returns (GetResponse)    {}
+    rpc StickBatch  (StickRequest)  returns (StickResponse)  {}
+    rpc CancelBatch (CancelRequest) returns (CancelResponse) {}
+    rpc DeleteBatch (DeleteRequest) returns (DeleteResponse) {}
+}
+
