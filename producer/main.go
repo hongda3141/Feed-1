@@ -2,20 +2,16 @@ package main
 
 import (
 	"Feed/producer/service"
+	"fmt"
 )
 
 func main() {
 
-	s := service.NewService()
+	s, err := service.NewService()
+	if err != nil {
+		fmt.Println("err:", err.Error())
+	}
 
 	s.Start()
-
-	//1.启动service，初始化es和kafka
-
-	//2.消费kafka 获取clickid
-
-	//3.查询ES
-
-	//4.返回查询结果
 
 }

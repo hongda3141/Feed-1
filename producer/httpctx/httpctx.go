@@ -7,5 +7,5 @@ import (
 
 type ServerContext struct {
 	EsManager *elastic.ElasticManager
-	Kafka     *kafka.KafkaManager
+	Kafka     *kafka.Producer
 }
